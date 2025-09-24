@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация по игровому движку PEngenAPI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            color: #333;
+        }
+        h1, h2, h3 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            color: #2c3e50;
+        }
+        code {
+            font-family: Consolas, monospace;
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #c0392b;
+        }
+        pre {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .note {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-left: 5px solid #3498db;
+            margin: 15px 0;
+        }
+        .code-example-title {
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Документация по игровому движку PEngenAPI</h1>
+
+    <p>Данная документация описывает использование компонентов игрового движка, реализованных в файлах <code>GnuEngenSFML.cs</code>, <code>Class1.cs</code> (<code>GameEngine</code>) и <code>SuperUpdate.cs</code>.</p>
+
+    <h2>1. Обзор архитектуры</h2>
+
+    <p>Движок состоит из трех основных частей:</p>
+    <ol>
+        <li><strong><code>GnuEngenSFML</code></strong>: Графический движок, основанный на SFML, отвечающий за отрисовку 2D-объектов, обработку ввода (мышь, текст) и анимацию.</li>
+        <li><strong><code>GameEngine</code></strong>: Физический и логический движок, отвечающий за управление объектами (<code>GameObject</code>), их физическое взаимодействие (столкновения, перемещение), и выполнение логики обновления.</li>
+        <li><strong><code>SuperUpdate</code></strong>: Компонент-обертка, предназначенный для унифицированного управления объектами из обоих движков (<code>GnuEngenSFML</code> и <code>GameEngine</code>) как единым целым, используя структуру <code>GameOBJN</code>.</li>
+    </ol>
+
+    <h2>2. Использование GameEngine (Физика и Логика)</h2>
+
+    <p>Класс <code>PEngenAPI.GameEngine</code> является центральным для управления игровой логикой и физикой.</p>
+
+    <h3>2.1. Класс <code>GameEngine.GameObject</code></h3>
+
+    <p>Это основной объект, с которым работает физический движок.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>x, y</code></td>
+                <td><code>float</code></td>
+                <td>Координаты объекта. Обновляются физическим движком.</td>
+            </tr>
+            <tr>
+                <td><code>vx, vy</code></td>
+                <td><code>float</code></td>
+                <td>Скорость объекта по осям X и Y.</td>
+            </tr>
+            <tr>
+                <td><code>width, height</code></td>
+                <td><code>float</code></td>
+                <td>Размеры объекта для расчета коллизий (AABB).</td>
+            </tr>
+            <tr>
+                <td><code>isStatic</code></td>
+                <td><code>bool</code></td>
+                <td>Если <code>true</code>, объект не перемещается физическим движком и используется как статическая преграда.</td>
+            </tr>
+            <tr>
+                <td><code>mass</code></td>
+                <td><code>float</code></td>
+                <td>Масса объекта (по умолчанию <code>1.0f</code>). Используется при расчете столкновений.</td>
+            </tr>
+            <tr>
+                <td><code>OnUpdate</code></td>
+                <td><code>Action&lt;GameObject&gt;</code></td>
+                <td>Делегат, вызываемый каждый кадр для выполнения игровой логики.</td>
+            </tr>
+            <tr>
+                <td><code>visual</code></td>
+                <td><code>GnuEngenSFML.D2Gun</code></td>
+                <td>Визуальное представление объекта, которое будет отображено графическим движком.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.2. Основные методы <code>GameEngine</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>GameEngine()</code></td>
+                <td><strong>Конструктор.</strong> Инициализирует графический движок (<code>GnuEngenSFML</code>) и создает окно.</td>
+            </tr>
+            <tr>
+                <td><code>AddObject(GameObject obj)</code></td>
+                <td>Добавляет объект в физический движок и, если есть <code>obj.visual</code>, в графический движок.</td>
+            </tr>
+            <tr>
+                <td><code>DeleteObject(GameObject obj)</code></td>
+                <td>Удаляет объект из движков.</td>
+            </tr>
+            <tr>
+                <td><code>UpdateObject(GameObject oldObj, GameObject newObj)</code></td>
+                <td>Обновляет существующий объект <code>oldObj</code> на <code>newObj</code> в списке объектов движка. <span style="font-weight: bold;">Внимание:</span> ищет по ссылке <code>oldObj</code>.</td>
+            </tr>
+            <tr>
+                <td><code>Run()</code></td>
+                <td><strong>Основной цикл игры.</strong> Запускает постоянный цикл: <code>UpdatePhysics</code>, <code>HandleCollisions</code>, <code>UpdateLogic</code>, <code>graphicsEngine.Draw</code>.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.3. Пример использования <code>GameEngine</code></h3>
+    <div class="code-example-title">Пример кода (C#)</div>
+    <pre><code class="csharp">using PEngenAPI;
+using static PEngenAPI.GnuEngen.GnuEngenSFML; // Для доступа к D2Gun
+
+// 1. Создание экземпляра движка
+GameEngine engine = new GameEngine();
+
+// 2. Создание визуального представления (D2Gun)
+D2Gun visualBall = new D2Gun
+{
+    x = 100, y = 100, sx = 50, sy = 50,
+    type = ObjectType.Cube, // Куб для простоты
+    base_color = 0x00FF00 // Зеленый
+};
+
+// 3. Создание игрового объекта (GameObject)
+GameEngine.GameObject ball = new GameEngine.GameObject
+{
+    x = 100, y = 100, width = 50, height = 50,
+    vx = 50f, vy = 100f, // Начальная скорость
+    mass = 5.0f,
+    visual = visualBall,
+    // Добавление логики: падение (простая гравитация)
+    OnUpdate = (gameObject) => 
+    {
+        // Увеличение вертикальной скорости с течением времени (гравитация)
+        gameObject.vy += 9.8f * 0.1f; // (9.8 м/с^2 * dt)
+    }
+};
+
+// 4. Создание статического объекта (Стена)
+D2Gun visualWall = new D2Gun
+{
+    x = 50, y = 500, sx = 700, sy = 50,
+    type = ObjectType.Cube,
+    base_color = 0xFF0000 // Красный
+};
+
+GameEngine.GameObject wall = new GameEngine.GameObject
+{
+    x = 50, y = 500, width = 700, height = 50,
+    isStatic = true, // Статичный объект, не будет двигаться
+    visual = visualWall
+};
+
+// 5. Добавление объектов в движок
+engine.AddObject(ball);
+engine.AddObject(wall);
+
+// 6. Запуск игрового цикла
+engine.Run();</code></pre>
+
+    <h2>3. Использование GnuEngenSFML (Графика и UI)</h2>
+
+    <p>Класс <code>PEngenAPI.GnuEngen.GnuEngenSFML</code> управляет графикой и элементами пользовательского интерфейса (UI). <strong>Обычно вы взаимодействуете с ним через <code>GameEngine</code> или <code>SuperUpdate</code></strong>, но можете использовать его напрямую для UI-элементов.</p>
+
+    <h3>3.1. Класс <code>GnuEngenSFML.D2Gun</code></h3>
+
+    <p>Это универсальный класс для всех 2D-объектов, которые может отрисовать графический движок.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>x, y, sx, sy</code></td>
+                <td><code>uint</code></td>
+                <td>Координаты (<code>x, y</code>) и размеры (<code>sx</code> - ширина, <code>sy</code> - высота).</td>
+            </tr>
+            <tr>
+                <td><code>type</code></td>
+                <td><code>ObjectType</code></td>
+                <td>Тип объекта (Cube, Line, Sprite, Text, Button, Input и т.д.).</td>
+            </tr>
+            <tr>
+                <td><code>base_color</code></td>
+                <td><code>uint</code></td>
+                <td>Цвет в формате <code>0xRRGGBB</code>.</td>
+            </tr>
+            <tr>
+                <td><code>texture</code></td>
+                <td><code>Texture</code></td>
+                <td>Текстура для <code>Sprite</code> или <code>Button</code>.</td>
+            </tr>
+            <tr>
+                <td><code>animation</code></td>
+                <td><code>Animation</code></td>
+                <td>Объект анимации для циклических кадров.</td>
+            </tr>
+            <tr>
+                <td><code>text</code></td>
+                <td><code>string</code></td>
+                <td>Текст для <code>Text</code>, <code>TextButton</code>.</td>
+            </tr>
+            <tr>
+                <td><code>font</code></td>
+                <td><code>Font</code></td>
+                <td>Шрифт для текста.</td>
+            </tr>
+            <tr>
+                <td><code>onClick</code></td>
+                <td><code>Action</code></td>
+                <td>Действие, выполняемое при нажатии на <code>Button</code> или <code>TextButton</code>.</td>
+            </tr>
+            <tr>
+                <td><code>inputString</code></td>
+                <td><code>string</code></td>
+                <td>Содержимое для <code>Input</code> поля.</td>
+            </tr>
+            <tr>
+                <td><code>isActive</code></td>
+                <td><code>bool</code></td>
+                <td>Указывает, активно ли поле <code>Input</code> для ввода текста.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>3.2. Типы объектов (<code>ObjectType</code>)</h3>
+
+    <p>Перечисление <code>GnuEngenSFML.ObjectType</code> определяет, как будет отрисовываться <code>D2Gun</code>:</p>
+    <ul>
+        <li><code>Cube</code>: Простой прямоугольник с цветом.</li>
+        <li><code>Line</code>: Отрезок.</li>
+        <li><strong><code>Sprite</code></strong>: Изображение с текстурой/анимацией.</li>
+        <li><code>Text</code>: Вывод текста.</li>
+        <li><code>Mesh</code>: Четырехугольник (квадрат/прямоугольник), отрисованный как примитив.</li>
+        <li><strong><code>Button</code></strong>: Кнопка со спрайтом и обработчиком <code>onClick</code>.</li>
+        <li><strong><code>TextButton</code></strong>: Кнопка с прямоугольником, текстом и обработчиком <code>onClick</code>.</li>
+        <li><strong><code>Input</code></strong>: Поле ввода текста с поддержкой обратного вызова <code>Window_TextEntered</code>.</li>
+    </ul>
+
+    <h3>3.3. Пример создания UI-кнопки</h3>
+    <div class="code-example-title">Пример кода (C#)</div>
+    <pre><code class="csharp">using PEngenAPI.GnuEngen;
+using SFML.Graphics;
+using System;
+using static PEngenAPI.GnuEngen.GnuEngenSFML;
+
+// Инициализация (обычно происходит внутри GameEngine)
+GnuEngenSFML gEngine = new GnuEngenSFML();
+gEngine.InitWindow(800, 600, "UI Test");
+
+// Создание функции, которая будет выполняться при нажатии
+Action onButtonClick = () =>
+{
+    Console.WriteLine("Кнопка была нажата!");
+};
+
+// Создание объекта D2Gun типа TextButton
+D2Gun myButton = new D2Gun
+{
+    x = 300, y = 200, sx = 200, sy = 50,
+    type = ObjectType.TextButton,
+    text = "Нажми меня!",
+    font = new Font("arial.ttf"), // Требуется файл шрифта
+    onClick = onButtonClick
+};
+
+// Добавление объекта в графический движок
+gEngine.AddObject(myButton);
+
+// Для отображения нужно вызвать Draw в цикле (GameEngine.Run() делает это автоматически)
+// В данном примере, если нет GameEngine.Run(), нужно реализовать цикл вручную:
+// while (gEngine.window.IsOpen) gEngine.Draw();</code></pre>
+
+    <h2>4. Использование SuperUpdate (Унифицированное управление)</h2>
+
+    <p>Класс <code>PEngenAPI.SuperUpdate.SuperUpdate</code> объединяет управление объектами из <code>GnuEngenSFML</code> и <code>GameEngine</code>. Это полезно для создания единого менеджера объектов сцены.</p>
+
+    <h3>4.1. Структура <code>SuperUpdate.GameOBJN</code></h3>
+
+    <p>Хранит информацию об объекте, включая его тип (<code>Gnu</code> для графического/UI или <code>Engen</code> для физического/игрового).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>name</code></td>
+                <td><code>string</code></td>
+                <td>Уникальное имя для поиска и управления.</td>
+            </tr>
+            <tr>
+                <td><code>d2Gun</code></td>
+                <td><code>GnuEngenSFML.D2Gun</code></td>
+                <td>Объект графического движка (если <code>gnuType</code> = <code>Gnu</code>).</td>
+            </tr>
+            <tr>
+                <td><code>gameObject</code></td>
+                <td><code>GameEngine.GameObject</code></td>
+                <td>Объект физического движка (если <code>gnuType</code> = <code>Engen</code>).</td>
+            </tr>
+            <tr>
+                <td><code>gnuType</code></td>
+                <td><code>GnuType</code></td>
+                <td>Тип: <code>Gnu</code> (только графика) или <code>Engen</code> (физика/игра).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.2. Основные методы <code>SuperUpdate</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Метод</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>SuperUpdate(GnuEngenSFML gEngine, GameEngine engine)</code></td>
+                <td><strong>Конструктор.</strong> Принимает ссылки на оба движка.</td>
+            </tr>
+            <tr>
+                <td><code>AddObject(GameOBJN obj)</code></td>
+                <td>Добавляет объект в список <code>SuperUpdate</code> и в соответствующий движок (<code>gEngine</code> или <code>engine</code>).</td>
+            </tr>
+            <tr>
+                <td><code>DeleteObject(string name)</code></td>
+                <td>Удаляет объект по имени из <code>SuperUpdate</code> и из соответствующего движка.</td>
+            </tr>
+            <tr>
+                <td><code>FindObject(string name)</code></td>
+                <td>Находит объект по имени. Возвращает <code>GameOBJN?</code> (nullable).</td>
+            </tr>
+            <tr>
+                <td><code>Exists(string name)</code></td>
+                <td>Проверяет, существует ли объект с данным именем.</td>
+            </tr>
+            <tr>
+                <td><code>Clear()</code></td>
+                <td>Удаляет все управляемые объекты из <code>SuperUpdate</code> и обоих движков.</td>
+            </tr>
+            <tr>
+                <td><code>UpdateObject(GameOBJN obj)</code></td>
+                <td>Обновляет объект в списке <code>SuperUpdate</code> по его имени.</td>
+            </tr>
+            <tr>
+                <td><code>Update()</code></td>
+                <td>Вызывает методы <code>UpdateObject</code> для всех объектов в обоих движках. <span style="font-weight: bold;">Внимание:</span> В <code>GameEngine.Run()</code> эта функция не вызывается автоматически, ее нужно вызывать вручную, если вы используете <code>SuperUpdate.Update()</code>.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.3. Пример использования <code>SuperUpdate</code></h3>
+    <div class="code-example-title">Пример кода (C#)</div>
+    <pre><code class="csharp">using PEngenAPI;
+using PEngenAPI.SuperUpdate;
+using static PEngenAPI.GnuEngen.GnuEngenSFML;
+
+// 1. Инициализация движков
+GameEngine engine = new GameEngine();
+GnuEngenSFML gEngine = engine.graphicsEngine; // Получаем ссылку на графический движок из GameEngine
+
+// 2. Инициализация SuperUpdate
+SuperUpdate superUpdater = new SuperUpdate(gEngine, engine);
+
+// 3. Создание игрового объекта (Engen Type)
+GameEngine.GameObject playerObj = new GameEngine.GameObject { /* ... параметры ... */ };
+GameOBJN player = new GameOBJN
+{
+    name = "Player",
+    gameObject = playerObj,
+    gnuType = SuperUpdate.GnuType.Engen
+};
+superUpdater.AddObject(player);
+
+// 4. Создание объекта UI (Gnu Type)
+D2Gun uiText = new D2Gun { /* ... параметры ... */ };
+GameOBJN scoreText = new GameOBJN
+{
+    name = "ScoreDisplay",
+    d2Gun = uiText,
+    gnuType = SuperUpdate.GnuType.Gnu
+};
+superUpdater.AddObject(scoreText);
+
+// 5. Запуск игры
+engine.Run(); 
+
+// Внутри игровой логики, например, в OnUpdate другого объекта:
+// 6. Обновление объекта UI (например, счетчика)
+GameOBJN? currentScoreObj = superUpdater.FindObject("ScoreDisplay");
+if (currentScoreObj.HasValue)
+{
+    D2Gun updatedText = currentScoreObj.Value.d2Gun;
+    updatedText.text = "Score: 100";
+    
+    // Создаем новый объект GameOBJN для обновления
+    GameOBJN updatedScoreObj = new GameOBJN
+    {
+        name = "ScoreDisplay",
+        d2Gun = updatedText,
+        gnuType = SuperUpdate.GnuType.Gnu // Важно сохранить тип
+    };
+    superUpdater.UpdateObject(updatedScoreObj);
+}</code></pre>
+
+</body>
+</html>
