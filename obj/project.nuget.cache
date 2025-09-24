@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "YUuUhlTnOLY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ParrotSoft\\source\\repos\\PEngen\\PEngenAPI\\PEngenAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ParrotSoft\\.nuget\\packages\\csfml\\2.6.1\\csfml.2.6.1.nupkg.sha512",
+    "C:\\Users\\ParrotSoft\\.nuget\\packages\\sfml.graphics\\2.6.1\\sfml.graphics.2.6.1.nupkg.sha512",
+    "C:\\Users\\ParrotSoft\\.nuget\\packages\\sfml.system\\2.6.1\\sfml.system.2.6.1.nupkg.sha512",
+    "C:\\Users\\ParrotSoft\\.nuget\\packages\\sfml.window\\2.6.1\\sfml.window.2.6.1.nupkg.sha512"
+  ],
+  "logs": []
+}

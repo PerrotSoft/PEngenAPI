@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon>ico-engen.ico</ApplicationIcon>
+    <Version>0.1</Version>
+    <Authors>ParrotSoft</Authors>
+    <PackageId>PEngenAPI</PackageId>
+    <Title>ParrotSoft PEngenAPI</Title>
+    <Company>ParrotSoft co</Company>
+    <Product>PEngenAPI</Product>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon>ico-engen.png</PackageIcon>
+    <PackageProjectUrl>https://perrotsoft.github.io/</PackageProjectUrl>
+    <Copyright>ParrotSoft</Copyright>
+    <Description>2D Game Engen Lib</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ico-engen.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\PEngen\bin\Debug\net8.0\ico-engen.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SFML.Graphics" Version="2.6.1" />
+    <PackageReference Include="SFML.System" Version="2.6.1" />
+    <PackageReference Include="SFML.Window" Version="2.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="SFML.Graphics" />
+    <Using Include="SFML.System" />
+    <Using Include="SFML.Window" />
+  </ItemGroup>
+
+</Project>

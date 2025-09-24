@@ -1,0 +1,12 @@
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\bin\Debug\net8.0\PEngenAPI.deps.json
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\bin\Debug\net8.0\PEngenAPI.dll
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\bin\Debug\net8.0\PEngenAPI.pdb
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.csproj.AssemblyReference.cache
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.AssemblyInfoInputs.cache
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.AssemblyInfo.cs
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.csproj.CoreCompileInputs.cache
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.dll
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\refint\PEngenAPI.dll
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\PEngenAPI.pdb
+C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\obj\Debug\net8.0\ref\PEngenAPI.dll

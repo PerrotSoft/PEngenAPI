@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PEngenAPI</id>
+    <version>0.1.0</version>
+    <title>ParrotSoft PEngenAPI</title>
+    <authors>ParrotSoft</authors>
+    <icon>ico-engen.png</icon>
+    <projectUrl>https://perrotsoft.github.io/</projectUrl>
+    <description>2D Game Engen Lib</description>
+    <copyright>ParrotSoft</copyright>
+    <repository type="git" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="SFML.Graphics" version="2.6.1" exclude="Build,Analyzers" />
+        <dependency id="SFML.System" version="2.6.1" exclude="Build,Analyzers" />
+        <dependency id="SFML.Window" version="2.6.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <contentFiles>
+      <files include="any/net8.0/ico-engen.ico" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\bin\Debug\net8.0\PEngenAPI.dll" target="lib\net8.0\PEngenAPI.dll" />
+    <file src="C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\ico-engen.ico" target="content\ico-engen.ico" />
+    <file src="C:\Users\ParrotSoft\source\repos\PEngen\PEngenAPI\ico-engen.ico" target="contentFiles\any\net8.0\ico-engen.ico" />
+    <file src="C:\Users\ParrotSoft\source\repos\PEngen\PEngen\bin\Debug\net8.0\ico-engen.png" target="\ico-engen.png" />
+  </files>
+</package>
